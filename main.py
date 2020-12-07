@@ -26,7 +26,9 @@ def start_screen():
     clicked = False
     select_game_button = button.Button(100, 30, ((size[0]-100)/2,(size[1]-30)/2), string="Select PGN file")
     font = pygame.font.Font(pygame.font.get_default_font(), 10)
-
+    image_button = button.ImageButton((size[0]/2,size[1]/2), "Sprites\\select_file.png",
+                                      "Sprites\\select_file_over.png", "Sprites\\select_file_clicked.png")
+    image_button.resize((100,30))
     # Main Loop
     while not done:
         clock.tick(10)
@@ -41,17 +43,19 @@ def start_screen():
 
         # Screen filling
         screen.fill(color.WHITE)
-        text = font.render(select_game_button.string, True, (30,0,0))
-        if select_game_button.is_mouse_over(mouse_position):
-            if clicked:
-                screen.fill(select_game_button.clicked_color, select_game_button.rect)
-                clicked = False
-            else:
-                screen.fill(select_game_button.mouse_over_color, select_game_button.rect)
-        else:
-            screen.fill(select_game_button.default_color, select_game_button.rect)
-        screen.blit(text, select_game_button.position)
+        text = font.render(str(mouse_position), True, (30,0,0))
+        # if select_game_button.is_mouse_over(mouse_position):
+        #     if clicked:
+        #         screen.fill(select_game_button.clicked_color, select_game_button.rect)
+        #         clicked = False
+        #     else:
+        #         screen.fill(select_game_button.mouse_over_color, select_game_button.rect)
+        # else:
+        #     screen.fill(select_game_button.default_color, select_game_button.rect)
+        screen.blit(text, (10,10))
+        image_button.draw(screen, mouse_position, clicked)
         pygame.display.flip()
+        clicked = False
 
 
 def game_screen():
