@@ -61,12 +61,16 @@ class ImageButton(Button):
         self.width = self.default_image.get_width()
         self.height = self.default_image.get_height()
 
-    def draw(self, screen: pygame.Surface, mouse_position,clicked: bool):
+    def draw(self, screen: pygame.Surface, mouse_position,clicked: bool) -> int:
         if self.is_mouse_over(mouse_position):
             if clicked:
                 image = self.clicked_image
+                return_value = 2
             else:
                 image = self.mouse_over_image
+                return_value = 1
         else:
             image = self.default_image
+            return_value = 0
         screen.blit(image, (self.position[0] - image.get_width()/2, self.position[1] - image.get_height()/2))
+        return return_value
