@@ -31,11 +31,15 @@ def start_screen():
     while not done:
         clock.tick(10)
         mouse_position = pygame.mouse.get_pos()
+
+        # Event Handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 clicked = True
+
+        # Screen filling
         screen.fill(color.WHITE)
         text = font.render(select_game_button.string, True, (30,0,0))
         if select_game_button.is_mouse_over(mouse_position):
