@@ -100,7 +100,6 @@ class GameScene(Scene):
         game = self.game.board()
         moves = self.game.mainline_moves()
         move = self.get_move()
-        game_iter = 0
         self.scene_manager.next_scene = None
         pygame.init()
         size = [512, 512]
@@ -115,11 +114,20 @@ class GameScene(Scene):
         pieces = piece_rect.Piece()
         pieces.resize_all_by_pixel([int(size[0]/8),int(size[1]/8)])
 
+        game_finished = False
         done = False
         mouse_position = pygame.mouse.get_pos()
 
         screen.fill(color.WHITE)
         screen.blit(board, board_rect)
+        game_list = [i.split(' ') for i in str(game).split('\n')]
+        for i, rank in enumerate(game_list):
+            for j, square in enumerate(rank):
+                if square == '.':
+                    pass
+                else:
+                    screen.blit(pieces.piece_dict[square], (j * size[0] / 8, i * size[1] / 8))
+
         while not done:
             clock.tick(10)
             for event in pygame.event.get():
@@ -129,16 +137,22 @@ class GameScene(Scene):
             if keys[pygame.K_ESCAPE]:
                 self.scene_manager.next_scene = Menu(self.scene_manager)
                 done = True
-            elif keys[pygame.K_RIGHT]:
+            elif keys[pygame.K_RIGHT] and not game_finished:
                 screen.fill(color.WHITE)
                 screen.blit(board, board_rect)
-                game.push(next(move))
-                game_iter += 1
+                try:
+                    game.push(next(move))
+                except StopIteration:
+                    # Result
+                    font = pygame.font.Font(pygame.font.get_default_font(),40)
+                    text = font.render(self.game.headers["Result"],True,color.RED)
+                    screen.blit(text,(size[0]/2 - text.get_width()/2, text.get_height() + 10))
+                    game_finished = True
                 game_list = [i.split(' ') for i in str(game).split('\n')]
                 for i, rank in enumerate(game_list):
                     for j, square in enumerate(rank):
                         if square == '.':
                             pass
                         else:
-                            screen.blit(pieces.piece_dict[square], ((j*2)/2*size[0]/8, (i*2)/2*size[1]/8))
+                            screen.blit(pieces.piece_dict[square], (j*size[0]/8, i*size[1]/8))
             pygame.display.flip()
