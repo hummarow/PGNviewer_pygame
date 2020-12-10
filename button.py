@@ -1,7 +1,5 @@
 import color
 import pygame
-from instance_adt import *
-from instance_manager import *
 from typing import *
 
 # A Button Manager that remembers the screen that buttons lie, automatically position the buttons.
@@ -13,7 +11,7 @@ from typing import *
 # font = pygame.font.Font(pygame.font.get_default_font(), 30)
 
 
-class Button(Instance):
+class Button:
     # CORRECTION: The variable 'position' has to store a center coordination of the button.
     #             Because the blit function requires a top left of the surface, we need to calculate again.
     #             However, it is more clear way to store a position of the button.
@@ -54,7 +52,8 @@ class ImageButton(Button):
         self.width = self.default_image.get_width()
         self.height = self.default_image.get_height()
 
-    def resize(self, size):
+    def resize_by_scale(self, scale: float):
+        size = (int(self.default_image.get_width()*scale), int(self.default_image.get_height()*scale))
         self.default_image = pygame.transform.scale(self.default_image, size)
         self.mouse_over_image = pygame.transform.scale(self.mouse_over_image, size)
         self.clicked_image = pygame.transform.scale(self.clicked_image, size)
