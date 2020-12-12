@@ -99,6 +99,8 @@ class GameScene(Scene):
         print(self.game)
         game = self.game.board()
         moves = self.game.mainline_moves()
+        move_list = list(self.game.mainline_moves())
+        iter = 0
         move = self.get_move()
         self.scene_manager.next_scene = None
         pygame.init()
@@ -137,17 +139,24 @@ class GameScene(Scene):
             if keys[pygame.K_ESCAPE]:
                 self.scene_manager.next_scene = Menu(self.scene_manager)
                 done = True
-            elif keys[pygame.K_RIGHT] and not game_finished:
+            elif (keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]) and not game_finished:
                 screen.fill(color.WHITE)
                 screen.blit(board, board_rect)
-                try:
-                    game.push(next(move))
-                except StopIteration:
+                if len(move_list) > iter >= 0:
+                    if keys[pygame.K_LEFT] and iter != 0:
+                        game.pop()
+                        iter -= 1
+                    elif keys[pygame.K_RIGHT]:
+                        game.push(move_list[iter])
+                        iter += 1
+                else:
                     # Result
                     font = pygame.font.Font(pygame.font.get_default_font(),40)
                     text = font.render(self.game.headers["Result"],True,color.RED)
                     screen.blit(text,(size[0]/2 - text.get_width()/2, text.get_height() + 10))
                     game_finished = True
+
+                # Print the game.
                 game_list = [i.split(' ') for i in str(game).split('\n')]
                 for i, rank in enumerate(game_list):
                     for j, square in enumerate(rank):
